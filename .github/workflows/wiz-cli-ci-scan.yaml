@@ -13,7 +13,6 @@ jobs:
       SCAN_PATH_PASS: "container-pass"
       SCAN_PATH_FAIL: "container-fail"
       IMAGE: demoimage
-      TAG: $(git rev-parse --short "$GITHUB_SHA")
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -34,7 +33,7 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build nginx/ -t $IMAGE:$TAG
+        docker build nginx/ -t $IMAGE:$(git rev-parse --short "$GITHUB_SHA")
       if: always()
     
     - name: Run Clair Docker scan
@@ -43,9 +42,9 @@ jobs:
         chmod +x clair-scanner
         docker run --net=host -d --name db arminc/clair-db:latest
         docker run --net=host --add-host postgres:127.0.0.1 -d --name clair arminc/clair-local-scan:latest
-        ./clair-scanner --ip 127.0.0.1 $IMAGE:$TAG
+        ./clair-scanner --ip 127.0.0.1 $IMAGE:$(git rev-parse --short "$GITHUB_SHA")
 
     - name: Tag and Push Docker Image
       run: |
-        docker tag $IMAGE:$TAG ghcr.io/${{ github.actor }}/$IMAGE:$TAG
-        docker push ghcr.io/${{ github.actor }}/$IMAGE:$TAG
+        docker tag $IMAGE:$TAG ghcr.io/${{ github.actor }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker push ghcr.io/${{ github.actor }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
