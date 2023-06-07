@@ -25,6 +25,7 @@ kind: Service
 metadata:
   name: nginx-service
 spec:
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: proxy
   ports:
