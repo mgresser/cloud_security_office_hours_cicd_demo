@@ -43,4 +43,6 @@ jobs:
     - name: Tag and Push Docker Image
       run: |
         docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ${{ secrets.DOCKER_USERNAME }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ${{ secrets.DOCKER_USERNAME }}/$IMAGE:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE:latest
