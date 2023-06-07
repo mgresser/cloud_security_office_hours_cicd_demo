@@ -6,7 +6,6 @@ on:
     
 jobs:
   container-scan:
-    if: contains(github.event.pull_request.head.ref, 'container')
     name: 'Dockerfile and Container Scan'
     runs-on: ubuntu-latest
     env:
