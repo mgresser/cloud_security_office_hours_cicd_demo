@@ -27,7 +27,7 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build -t $IMAGE:$TAG
+        docker build nginx/ -t $IMAGE:$TAG
       if: always()
     
     - name: Run Clair Docker scan
