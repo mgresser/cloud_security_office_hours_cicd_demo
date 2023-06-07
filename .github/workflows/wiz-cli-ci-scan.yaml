@@ -12,7 +12,7 @@ jobs:
       # Set the relative path in the repo to scan
       SCAN_PATH_PASS: "container-pass"
       SCAN_PATH_FAIL: "container-fail"
-      IMAGE: demoimage
+      IMAGE: cloud_security_office_hours_demo
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -45,5 +45,5 @@ jobs:
 
     - name: Tag and Push Docker Image
       run: |
-        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") mgresser1981/cloud_security_office_hours_demo/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
-        docker push mgresser1981/cloud_security_office_hours_demo/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") $username/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker push $username/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
