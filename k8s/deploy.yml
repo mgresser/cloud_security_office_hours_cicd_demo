@@ -21,7 +21,7 @@ spec:
             - "sleep 60m"
           imagePullPolicy: Always
           ports:
-           - containerPort: 80
+           - containerPort: 8080
              name: nginx-svc
 ---
 apiVersion: v1
