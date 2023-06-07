@@ -15,6 +15,10 @@ spec:
       containers:
         - name: alpine
           image: mgresser1981/cloud_security_office_hours_demo:latest
+          command:
+            - /bin/sh
+            - "-c"
+            - "sleep 60m"
           imagePullPolicy: Always
           ports:
            - containerPort: 80
