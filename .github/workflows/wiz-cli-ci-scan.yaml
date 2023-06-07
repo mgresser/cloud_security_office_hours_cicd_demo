@@ -1,0 +1,42 @@
+name: 'demo-ci-scan'
+on: 
+  pull_request:
+    branches: 
+    - main
+    
+jobs:
+  container-scan:
+    if: contains(github.event.pull_request.head.ref, 'container')
+    name: 'Dockerfile and Container Scan'
+    runs-on: ubuntu-latest
+    env:
+      # Set the relative path in the repo to scan
+      SCAN_PATH_PASS: "container-pass"
+      SCAN_PATH_FAIL: "container-fail"
+      IMAGE: demoimage
+      TAG: latest
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: |
+        docker build -t $IMAGE:$TAG
+      if: always()
+    
+    - name: Run Clair Docker scan
+      run: |
+        docker run -p 5432:5432 -d --name db arminc/clair-db:latest
+        docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
+        clair-scanner --ip 127.0.0.1 $IMAGE:$TAG
+    
+    - name: Push docker image
+      run: |
+        echo "Pushing image here"
