@@ -36,8 +36,8 @@ jobs:
         chmod +x clair-scanner
         docker run --net=host -d --name db arminc/clair-db:latest
         docker run --net=host --add-host postgres:127.0.0.1 -d --name clair arminc/clair-local-scan:latest
-        ./clair-scanner $IMAGE:$TAG http://127.0.0.1:6060 127.0.0.1
-    
+        ./clair-scanner --ip 127.0.0.1 $IMAGE:$TAG
+
     - name: Push docker image
       run: |
         echo "Pushing image here"
