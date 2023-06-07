@@ -34,9 +34,9 @@ jobs:
       run: |
         wget --no-check-certificate --content-disposition https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -O clair-scanner
         chmod +x clair-scanner
-        docker run -p 5432:5432 -d --name db arminc/clair-db:latest
-        docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
-        ./clair-scanner $IMAGE:$TAG --ip host.docker.internal
+        docker run --net=host -d --name db arminc/clair-db:latest
+        docker run --net=host --add-host postgres:127.0.0.1 -d --name clair --net=host arminc/clair-local-scan:latest
+        ./clair-scanner $IMAGE:$TAG http://127.0.0.1:6060 127.0.0.1
     
     - name: Push docker image
       run: |
