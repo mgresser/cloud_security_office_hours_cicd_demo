@@ -24,6 +24,13 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Check out repository
       uses: actions/checkout@v2
+    
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build the Docker image
       run: |
@@ -38,12 +45,6 @@ jobs:
         docker run --net=host --add-host postgres:127.0.0.1 -d --name clair arminc/clair-local-scan:latest
         ./clair-scanner --ip 127.0.0.1 $IMAGE:$TAG
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Tag and Push Docker Image
       run: |
         docker tag $IMAGE:$TAG ghcr.io/${{ github.actor }}/$IMAGE:$TAG
