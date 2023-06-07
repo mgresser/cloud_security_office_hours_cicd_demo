@@ -46,5 +46,5 @@ jobs:
 
     - name: Tag and Push Docker Image
       run: |
-        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ghcr.io/${{ github.actor }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
-        docker push ghcr.io/${{ github.actor }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ghcr.io/${{ github.repository }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker push ghcr.io/${{ github.repository }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
