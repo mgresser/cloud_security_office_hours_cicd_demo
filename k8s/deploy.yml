@@ -36,4 +36,4 @@ spec:
   - name: http
     protocol: TCP
     port: 80
-    targetPort: http-svc
+    targetPort: nginx-svc
