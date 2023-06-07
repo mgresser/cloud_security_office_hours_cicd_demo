@@ -36,7 +36,7 @@ jobs:
         chmod +x clair-scanner
         docker run -p 5432:5432 -d --name db arminc/clair-db:latest
         docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
-        scanner_ip = `docker run --rm clairscan hostname -i`
+        scanner_ip = `docker run --rm clair hostname -i`
         ./clair-scanner --ip $scanner_ip $IMAGE:$TAG
     
     - name: Push docker image
