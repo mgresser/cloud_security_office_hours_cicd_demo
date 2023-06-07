@@ -1,39 +1,38 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: alpine
+  name: nginx
+  labels:
+    app: nginx
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: alpine
-  replicas: 2
+      app: nginx
   template:
     metadata:
       labels:
-        app: alpine
+        app: nginx
     spec:
       containers:
-        - name: alpine
-          image: mgresser1981/cloud_security_office_hours_demo:latest
-          command:
-            - /bin/sh
-            - "-c"
-            - "sleep 60m"
-          imagePullPolicy: Always
-          ports:
-           - containerPort: 8080
-             name: nginx-svc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-spec:
-  type: LoadBalancer
-  selector:
-    app.kubernetes.io/name: proxy
-  ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: nginx-svc
+      - name: nginx
+        image: mgresser1981/cloud_security_office_hours_demo:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
