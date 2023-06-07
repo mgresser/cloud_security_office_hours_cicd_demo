@@ -13,7 +13,7 @@ jobs:
       SCAN_PATH_PASS: "container-pass"
       SCAN_PATH_FAIL: "container-fail"
       IMAGE: demoimage
-      TAG: $SOURCE_COMMIT
+      TAG: $(git rev-parse --short "$GITHUB_SHA")
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
