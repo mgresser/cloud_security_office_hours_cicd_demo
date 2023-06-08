@@ -6,15 +6,10 @@ on:
     
 jobs:
   container-scan:
-    if: contains(github.event.pull_request.head.ref, 'container')
     name: 'Dockerfile and Container Scan'
     runs-on: ubuntu-latest
     env:
-      # Set the relative path in the repo to scan
-      SCAN_PATH_PASS: "container-pass"
-      SCAN_PATH_FAIL: "container-fail"
-      IMAGE: demoimage
-      TAG: latest
+      IMAGE: cloud_security_office_hours_demo
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -25,18 +20,29 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Check out repository
       uses: actions/checkout@v2
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build the Docker image
       run: |
-        docker build -t $IMAGE:$TAG
+        docker build nginx/ -t $IMAGE:$(git rev-parse --short "$GITHUB_SHA")
       if: always()
     
     - name: Run Clair Docker scan
       run: |
-        docker run -p 5432:5432 -d --name db arminc/clair-db:latest
-        docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:latest
-        clair-scanner --ip 127.0.0.1 $IMAGE:$TAG
-    
-    - name: Push docker image
+        wget --no-check-certificate --content-disposition https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -O clair-scanner
+        chmod +x clair-scanner
+        docker run --net=host -d --name db arminc/clair-db:latest
+        docker run --net=host --add-host postgres:127.0.0.1 -d --name clair arminc/clair-local-scan:latest
+        ./clair-scanner --ip 127.0.0.1 $IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+
+    - name: Tag and Push Docker Image
       run: |
-        echo "Pushing image here"
+        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ${{ secrets.DOCKER_USERNAME }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker tag $IMAGE:$(git rev-parse --short "$GITHUB_SHA") ${{ secrets.DOCKER_USERNAME }}/$IMAGE:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE:$(git rev-parse --short "$GITHUB_SHA")
+        docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE:latest
