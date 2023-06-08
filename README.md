@@ -15,6 +15,7 @@ Docker for Desktop with a kubernetes cluster.
 
 Steps:
 Clone repo
+Create a new branch and initiate a PR to correct the time for office hours.
 Create service account in Docker Hub to use to upload images.
 Create secrets in Github for the DockerHub credentials.
 Enable Kubernetes in Docker for Desktop
@@ -41,3 +42,17 @@ Set revision to HEAD
 Set path to /k8s
 Select cluster docker.internal
 Set namespace to demo
+App should deploy.
+http://localhost
+Review the pipeline.
+Introduce a vulnerable base container, such as nginx:latest and watch scan results.
+Once built update tag for container to a specific hash and watch it deploy to argo
+View the changes
+
+You have done the following through this exercise:
+Built a docker container with a web server in it.
+Added and modified content to be hosted in that server.
+Introduced vulnerablities into the docker container.
+Scanned the container with Clair and blocked due to vulnerabilities.
+Resolved the vulnerabilties and successfully uploaded our container to dockerhub.
+Deployed the resulting container to our kubernetes cluster and exposed it.
