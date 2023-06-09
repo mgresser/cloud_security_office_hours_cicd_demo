@@ -11,8 +11,7 @@ spec:
   - port: 80
     protocol: TCP
     targetPort: 80
-    nodePort: 80
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
